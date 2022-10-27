@@ -6,11 +6,11 @@ from pymongo import MongoClient
 
 client = pymongo.MongoClient("mongodb+srv://cassiehe221:1234@cluster0.jt2g2.mongodb.net/?retryWrites=true&w=majority")
 db = client['Encryption']
-collection = db['Users']
+user_collection = db['Users']
 
 
 class LoginPage(object):
-	global collection
+	global user_collection
 
 	def __init__(self, master=None): #master=None?
 		self.root = master
@@ -35,7 +35,7 @@ class LoginPage(object):
 		name = self.user_name.get()
 		pw = self.user_password.get()
 
-		found_user = collection.find_one({'user_name': name})
+		found_user = user_collection.find_one({'user_name': name})
 
 		if found_user != None:
 			if name == found_user['user_name'] and pw == found_user['user_password']:
@@ -50,12 +50,12 @@ class LoginPage(object):
 		def subCreate():
 			np = new_pwd.get()
 			nn = new_name.get()
-			if collection.find_one({'user_name': nn}) != None:
+			if user_collection.find_one({'user_name': nn}) != None:
 				print("该用户已存在，请重试")
 				showinfo(title='错误', message='用户已存在')
 			else:
 				showinfo(title='成功', message='创建成功')
-				collection.insert_one({'user_name': nn, 'user_password': np})
+				user_collection.insert_one({'user_name': nn, 'user_password': np})
 		window_sign_up = Toplevel(self.root)
 		window_sign_up.geometry('300x200')
 

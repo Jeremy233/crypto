@@ -1,6 +1,6 @@
 from tkinter import *
 from tkinter.messagebox import *
-# from MainPage import *
+from MainPage import *
 import pymongo
 from pymongo import MongoClient
 
@@ -14,7 +14,7 @@ class LoginPage(object):
 
 	def __init__(self, master=None): #master=None?
 		self.root = master
-		self.root.geometry("300x300")
+		self.root.geometry("300x150")
 		self.user_name = StringVar()
 		self.user_password = StringVar()
 		self.createPage()
@@ -40,7 +40,7 @@ class LoginPage(object):
 		if found_user != None:
 			if name == found_user['user_name'] and pw == found_user['user_password']:
 				self.page.destroy()
-				# MainPage(self.root)
+				MainPage(self.root)
 			else:
 				showinfo(title='错误', message='账号或密码错误')
 		else:

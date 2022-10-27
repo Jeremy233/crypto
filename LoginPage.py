@@ -51,7 +51,6 @@ class LoginPage(object):
 			np = new_pwd.get()
 			nn = new_name.get()
 			if user_collection.find_one({'user_name': nn}) != None:
-				print("该用户已存在，请重试")
 				showinfo(title='错误', message='用户已存在')
 			else:
 				showinfo(title='成功', message='创建成功')

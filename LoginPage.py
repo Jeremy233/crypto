@@ -9,6 +9,7 @@ db = client['Encryption']
 user_collection = db['Users']
 message_collection = db['Messages']
 
+
 class LoginPage(object):
 	global user_collection
 
@@ -40,7 +41,7 @@ class LoginPage(object):
 		if found_user != None:
 			if name == found_user['user_name'] and pw == found_user['user_password']:
 				self.page.destroy()
-				MainPage(self.root)
+				MainPage(self.root, self.user_name)
 			else:
 				showinfo(title='错误', message='账号或密码错误')
 		else:
@@ -75,10 +76,11 @@ class LoginPage(object):
 
 class MainPage(object):
 
-	def __init__(self, master=None):
+	def __init__(self, username, master=None):
 		self.root = master
 		self.root.geometry("250x300")
 		self.createPage()
+		self.username = username
 
 	def createPage(self):
 		# self.leaveNotesPage = LeaveNotesPageFrame(self.root)
@@ -115,11 +117,12 @@ class MainPage(object):
 class OthersMessagePage(object):
 	global message_collection
 
-	def __init__(self, master=None):
+	def __init__(self, username, master=None):
 		self.root = master
 		self.root.geometry("300x200")
 		self.others_user_name = StringVar()
 		self.current_page_idx = 0
+		self.username = username
 
 
 		self.createPage()

@@ -59,6 +59,7 @@ class LoginPage(object):
 			else:
 				showinfo(title='成功', message='创建成功')
 				user_collection.insert_one({'user_name': nn, 'user_password': np})
+				window_sign_up.destroy()
 		window_sign_up = Toplevel(self.root)
 		window_sign_up.geometry('300x200')
 
@@ -124,41 +125,23 @@ class MainPage(object):
 
 	def enterDeleteUserPage(self):
 		deleteUserWindow = Toplevel(self.root)
-		deleteUserWindow.geometry("300x200")
-		Label(deleteUserWindow).grid(row=0)
-		Label(deleteUserWindow, text='你确定吗？你的留言将全部被删除').grid(row=1, column=1)
+		deleteUserWindow.geometry("200x100")
+		deleteFrame = Frame(deleteUserWindow)
+		deleteFrame.pack()
+		Label(deleteFrame).grid(row=0)
+		Label(deleteFrame, text='你确定吗？你的留言将全部被删除').grid(row=1, columnspan=3)
 		def yes():
 			user_collection.delete_one({'user_name': self.username})
 			self.root.destroy()
 			LoginPage(Tk())
 		def no():
 			deleteUserWindow.destroy()
-		Button(deleteUserWindow, text='是', command=yes).grid(row=2)
-		Button(deleteUserWindow, text='否', command=no).grid(row=2, column=2)
+		Button(deleteFrame, text='是', command=yes, width=6, height=1).grid(row=2)
+		Button(deleteFrame, text='否', command=no, width=6, height=1).grid(row=2, column=2)
 
 	def enterLogOutPage(self):
 		self.page.destroy()
 		LoginPage(self.root)
-
-
-# class DeleteUserPage(object):
-# 	def __init__(self, master, username):
-# 		self.root = master
-# 		self.root.geometry("150x100")
-# 		self.username = username
-# 		self.createPage()
-
-# 	def createPage(self):
-# 		self.page = Frame(self.root)
-# 		self.page.pack()
-# 		Label(self.page).grid(row=0)
-# 		Label(self.page, text='你确定吗？你的留言将全部被删除').grid(row=1)
-# 		def yes():
-# 			pass
-# 		def no():
-# 			pass
-# 		Button(self.page, text='是', command=yes).grid(row=2)
-# 		Button(self.page, text='否', command=no).grid(row=2, column=1)
 
 
 
@@ -278,13 +261,16 @@ class OthersMessagePage(object):
 
 
 				def get_msg(msg_idx):
-					nonlocal messages, needKeyWindowFrame
+					nonlocal messages
 					needKeyWindowFrame.destroy()
+					needKeyWindow.geometry('400x300')
+					otherMsgFrame = Frame(needKeyWindow)
+					otherMsgFrame.pack()
 					msg = messages[msg_idx]
-					Label(needKeyWindow, text=msg['time'], justify=CENTER).grid(row=0)
-					Label(needKeyWindow, text=dec(msg['message']), justify=CENTER).grid(row=1)
-					Button(needKeyWindow, text='标为已读', command=lambda: read(msg)).grid(row=2)
-					Label(needKeyWindow, text=self.username).grid(row=2, column=1)
+					Label(otherMsgFrame, text=msg['time'], justify=CENTER).grid(row=0)
+					Label(otherMsgFrame, text=dec(msg['message']), justify=CENTER, width=50, height=10, bg='#bbd8f2').grid(row=1, columnspan=2)
+					Button(otherMsgFrame, text='标为已读', command=lambda: read(msg)).grid(row=2)
+					Label(otherMsgFrame, text=self.username).grid(row=2, column=1)
 				
 
 			Label(others_message_window, text=others_name+'的留言').grid(row=0, column=1)
@@ -401,7 +387,9 @@ class SelfMessagePage(object):
 			def clear():
 				confirmClearWindow = Toplevel(self.page)
 				confirmClearWindow.geometry('200x150')
-				Label(confirmClearWindow, text='确定？').grid(row=0)
+				confirmFrame = Frame(confirmClearWindow)
+				confirmFrame.pack()
+				Label(confirmFrame, text='你确定吗？').grid(row=0, columnspan=3)
 
 				def no():
 					nonlocal confirmClearWindow
@@ -412,8 +400,8 @@ class SelfMessagePage(object):
 					self.page.destroy()
 					SelfMessagePage(self.root, self.username)
 
-				Button(confirmClearWindow, text='是', command=yes).grid(row=1)
-				Button(confirmClearWindow, text='否', command=no).grid(row=1, column=1)
+				Button(confirmFrame, text='是', command=yes, width=6).grid(row=1)
+				Button(confirmFrame, text='否', command=no, width=6).grid(row=1, column=2)
 
 
 			Label(self.page, text=self.username + '的留言').grid(row=0, column=1, pady=10)
@@ -442,23 +430,26 @@ class SelfMessagePage(object):
 				def delete(msg1):
 					nonlocal needKeyWindowFrame
 					message_collection.delete_one(msg1)
-					# needKeyWindowFrame.destroy()
-					# needKeyWindow.destroy()
 					self.page.destroy()
 					SelfMessagePage(self.root, self.username)
 
 				def get_msg(msg_idx):
 					nonlocal needKeyWindowFrame
 					needKeyWindowFrame.destroy()
+					needKeyWindow.geometry('400x300')
+					myMsgFrame = Frame(needKeyWindow)
+					myMsgFrame.pack()
 					decKey = key.get()
 					msg = self.messages[msg_idx]
-					Label(needKeyWindow, text=msg['time'], justify=CENTER).grid(row=0)
-					Label(needKeyWindow, text=dec(msg['message'], decKey), justify=CENTER).grid(row=1)
-					Button(needKeyWindow, text='删除本条消息', command=lambda: delete(msg)).grid(row=2)
-					Label(needKeyWindow, text=self.username).grid(row=2, column=1)
+					Label(myMsgFrame, text=msg['time'], justify=CENTER).grid(row=0)
+					Label(myMsgFrame, text=dec(msg['message'], decKey), bg='#abedd6', justify=CENTER, width=40, height=10).grid(row=1, columnspan=3)
+					Button(myMsgFrame, text='删除本条消息', command=lambda: delete(msg)).grid(row=2)
+					Label(myMsgFrame, text=self.username).grid(row=2, column=1)
 					readers = ''.join([reader for reader in msg['readBy']])
-
-					Label(needKeyWindow, text='被' + readers + '标为已读').grid(row=3)
+					if len(readers) != 0:
+						Label(myMsgFrame, text='被' + readers + '标为已读').grid(row=3)
+					else:
+						Label(myMsgFrame, text='这条留言还没有人查看过').grid(row=3)
 
 			def change_text_button(): # message is a list
 				nonlocal m1, m1_button, m2, m2_button, m3, m3_button

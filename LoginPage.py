@@ -13,10 +13,11 @@ message_collection = db['Messages']
 class LoginPage(object):
 	global user_collection
 
-	def __init__(self, master=None): #master=None?
+	def __init__(self, master): #master=None?
 		self.root = master
 		self.root.geometry("300x150")
 		self.user_name = StringVar()
+		self.username = self.user_name.get()
 		self.user_password = StringVar()
 		self.createPage()
 
@@ -29,6 +30,7 @@ class LoginPage(object):
 		Entry(self.page, textvariable=self.user_name).grid(row=1, column=1, stick=E)
 		Label(self.page, text='登入密码:').grid(row=2, stick=W)
 		Entry(self.page, textvariable=self.user_password, show='*').grid(row=2, column=1, stick=E)
+
 		Button(self.page, text='登入', command=self.loginCheck).grid(row=3, stick=W, pady=10)
 		Button(self.page, text='创建账号', command=self.createAccount).grid(row=3, column=1, stick=W)
 
@@ -41,7 +43,8 @@ class LoginPage(object):
 		if found_user != None:
 			if name == found_user['user_name'] and pw == found_user['user_password']:
 				self.page.destroy()
-				MainPage(self.root, self.user_name)
+				self.username = self.user_name.get()
+				MainPage(self.root, self.username)
 			else:
 				showinfo(title='错误', message='账号或密码错误')
 		else:
@@ -76,7 +79,7 @@ class LoginPage(object):
 
 class MainPage(object):
 
-	def __init__(self, master=None, username):
+	def __init__(self, master, username):
 		self.root = master
 		self.root.geometry("250x300")
 		self.createPage()
@@ -117,7 +120,7 @@ class MainPage(object):
 class OthersMessagePage(object):
 	global message_collection
 
-	def __init__(self, username, master=None):
+	def __init__(self, master, username):
 		self.root = master
 		self.root.geometry("300x200")
 		self.others_user_name = StringVar()
@@ -221,13 +224,18 @@ class OthersMessagePage(object):
 					result = ''.join(result_list)
 					return result
 
+				def read(msg1):
+					if self.username not in msg1['readBy']:
+						message_collection.update_one(msg1, {'$push': {'readBy': self.username}})
+
 
 				def get_msg(msg_idx):
 					nonlocal messages, needKeyWindowFrame
 					needKeyWindowFrame.destroy()
 					msg = messages[msg_idx]
 					Label(needKeyWindow, text=dec(msg['message']), justify=CENTER).grid(row=0)
-					Button(needKeyWindow, text=self.username)
+					Button(needKeyWindow, text='标为已读', command=lambda: read(msg)).grid(row=1)
+					Label(needKeyWindow, text=self.username).grid(row=1, column=1)
 				
 
 			Label(others_message_window, text=others_name+'的留言').grid(row=0, column=1)

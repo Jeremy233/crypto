@@ -4,12 +4,12 @@ import pymongo
 from pymongo import MongoClient
 import time
 
+from LoginPage import MainPage
+
 
 client = pymongo.MongoClient("mongodb+srv://cassiehe221:1234@cluster0.jt2g2.mongodb.net/?retryWrites=true&w=majority")
 db = client['Encryption']
 message_collection = db['Messages']
-
-
 
 class OthersMessagePage(object):
 	global message_collection
@@ -118,12 +118,13 @@ class OthersMessagePage(object):
 					return result
 
 				def read():
-					collection.
+					pass
 				def get_msg(msg_idx):
 					nonlocal messages, needKeyWindowFrame
 					needKeyWindowFrame.destroy()
 					msg = messages[msg_idx]
 					Label(needKeyWindow, text=dec(msg['message']), justify=CENTER).grid(row=0)
+
 					Button(needKeyWindow, text='标为已读', command=read).grid(row=1)
 
 				
@@ -170,8 +171,3 @@ class OthersMessagePage(object):
 			showinfo(title='错误', message='该用户没有任何消息')
 
 
-
-root = Tk()
-root.title('Secrets')
-OthersMessagePage(root)
-root.mainloop()

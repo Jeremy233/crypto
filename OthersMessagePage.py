@@ -4,6 +4,8 @@ import pymongo
 from pymongo import MongoClient
 import time
 
+from LoginPage import MainPage
+
 
 client = pymongo.MongoClient("mongodb+srv://cassiehe221:1234@cluster0.jt2g2.mongodb.net/?retryWrites=true&w=majority")
 db = client['Encryption']
@@ -123,6 +125,7 @@ class OthersMessagePage(object):
 					needKeyWindowFrame.destroy()
 					msg = messages[msg_idx]
 					Label(needKeyWindow, text=dec(msg['message']), justify=CENTER).grid(row=0)
+					MainPage.
 				
 
 			Label(others_message_window, text=others_name+'的留言').grid(row=0, column=1)

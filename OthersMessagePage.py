@@ -7,9 +7,9 @@ client = pymongo.MongoClient("mongodb+srv://cassiehe221:1234@cluster0.jt2g2.mong
 db = client['Encryption']
 message_collection = db['Messages']
 
+
 class OthersMessagePage(object):
 	global message_collection
-	global user_collection
 
 	def __init__(self, master=None):
 		self.root = master
@@ -40,10 +40,33 @@ class OthersMessagePage(object):
 
 	def getMessagesFromOthers(self):
 		others_name = self.others_user_name.get()
-		if user_collection.find_one({'user_name': nn}) != None:
+		print(type(others_name))
+		messages = list(message_collection.find({'user_name': others_name}))
+		
+		if messages != None:
+			others_message_window = Toplevel(self.root)
+			others_message_window.geometry('500x400')
+			page_numbers = len(list(messages)) % 3 + 1
+
+			Label(others_message_window, text=others_name+'的留言').grid(row=0, column=1)
+			Button(others_message_window, text='<<').grid(row=2)
+			Button(others_message_window, text='>>').grid(row=2, column=4)
+			
+			Label(others_message_window, text=messages[0]['time'], bg='blue', width=40, height=5).grid(row=1, column=1)
+			Button(others_message_window, text='查看').grid(row=1, column=2, stick=E)
+
+			try:
+				Label(others_message_window, text=messages[2]['time'], bg='blue', width=40, height=5).grid(row=2, column=1)
+				Button(others_message_window, text='查看').grid(row=2, column=2, stick=E)
+			except IndexError:
+				Label(others_message_window, text='没有其他留言了', bg='green', width=40, height=5).grid(row=2, column=1)
+				Button(others_message_window, text='查看', state=DISABLED).grid(row=2, column=2, stick=E)
+				Label(others_message_window, text='没有其他留言了', bg='green', width=40, height=5).grid(row=3, column=1)
+				Button(others_message_window, text='查看', state=DISABLED).grid(row=3, column=2, stick=E)
+
 
 		else:
-			
+			showinfo(title='错误', message='该用户没有任何消息')
 
 
 		pass

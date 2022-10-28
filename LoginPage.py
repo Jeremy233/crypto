@@ -76,7 +76,7 @@ class LoginPage(object):
 
 class MainPage(object):
 
-	def __init__(self, username, master=None):
+	def __init__(self, master=None, username):
 		self.root = master
 		self.root.geometry("250x300")
 		self.createPage()
@@ -101,7 +101,7 @@ class MainPage(object):
 
 	def enterCheckMsgPage(self):
 		self.page.destroy()
-		OthersMessagePage(self.root)
+		OthersMessagePage(self.root, username=self.username)
 
 	def enterChangePasswordPage(self):
 		ChangePasswordPage(self.root)
@@ -227,6 +227,7 @@ class OthersMessagePage(object):
 					needKeyWindowFrame.destroy()
 					msg = messages[msg_idx]
 					Label(needKeyWindow, text=dec(msg['message']), justify=CENTER).grid(row=0)
+					Button(needKeyWindow, text=self.username)
 				
 
 			Label(others_message_window, text=others_name+'的留言').grid(row=0, column=1)

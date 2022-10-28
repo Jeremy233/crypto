@@ -117,12 +117,15 @@ class OthersMessagePage(object):
 					result = ''.join(result_list)
 					return result
 
-
+				def read():
+					collection.
 				def get_msg(msg_idx):
 					nonlocal messages, needKeyWindowFrame
 					needKeyWindowFrame.destroy()
 					msg = messages[msg_idx]
 					Label(needKeyWindow, text=dec(msg['message']), justify=CENTER).grid(row=0)
+					Button(needKeyWindow, text='标为已读', command=read).grid(row=1)
+
 				
 
 			Label(others_message_window, text=others_name+'的留言').grid(row=0, column=1)
